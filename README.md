@@ -1,4 +1,4 @@
-## High-quality genome assembly of a Pestalotiopsis fungiusing DIY-friendly Methods
+## High-quality genome assembly of a Pestalotiopsis fungi using DIY-friendly Methods
 
 [![DOI](https://zenodo.org/badge/406962936.svg)](https://zenodo.org/badge/latestdoi/406962936)
 

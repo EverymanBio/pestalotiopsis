@@ -1,6 +1,6 @@
 # High-quality genome assembly of a Pestalotiopsis fungiusing DIY-friendly Methods
 
-[![DOI](https://zenodo.org/badge/DOI/example/zenodo.example.svg)](https://doi.org/example)
+[![DOI](https://zenodo.org/badge/406962936.svg)](https://zenodo.org/badge/latestdoi/406962936)
 
 The following contains the steps used in the assembly, polishing and annotation pipeline for generating the Pestalotiopsis draft genome. 
 

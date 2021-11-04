@@ -17,7 +17,7 @@ flye --nano-hq /mnt/e/pestalotiopsis/guppy_sup_output/combined.fastq.gz \
 &> /mnt/e/pestalotiopsis/assembly/flye/flye.out
 ```
 
-### Assembly Error Correction
+### Error Correction
 A `5kb` circular contained in `contig_11` believed to be unrelated to the source organism was identified and trimmed from the draft assembly. Overlaps were then generated from the truncated assembly and error corrected.
 
 ####  Trimming contig_11 (5kb contig)
@@ -50,6 +50,7 @@ contig_10
 ```
 
 4. Use [rakon](https://github.com/lbcb-sci/racon) `v.1.4.22` for error correction
+
 Note that the overlaps were gzipped prior to running rakon (e.g. `gzip overlaps.paf`)
 
 ```

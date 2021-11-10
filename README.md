@@ -4,6 +4,16 @@
 
 The following contains the steps used in the assembly, polishing and annotation pipeline for generating the Pestalotiopsis draft genome. 
 
+### Basecalling 
+
+Basecalling of all reads was performed using Guppy v5.0.15+a642d3b in super accuracy mode without q-score filteirng.
+
+```
+guppy_basecaller -i everymanbio/ --recursive -s guppy_sup_output/ --config dna_r9.4.1_450bps_sup.cfg --device cuda:0 --disable_qscore_filtering 
+
+cat guppy_sup_output/*.fastq | gzip > guppy_sup_output/combined.fastq.gz 
+```
+
 ### _De novo_ Assembly of Nanopore Sequencing Read Data
 Sequencing was performed on the Oxford Nanopore platform and multiple `fastq` files were emitted from Guppy, the basecalling component of the MinKNOW software package.
 

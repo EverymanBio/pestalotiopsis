@@ -4,16 +4,6 @@
 
 The following contains the steps used in the assembly, polishing and annotation pipeline for generating the Pestalotiopsis draft genome. 
 
-### Basecalling 
-
-Basecalling of all reads was performed using Guppy v5.0.15+a642d3b in super accuracy mode without q-score filteirng.
-
-```
-guppy_basecaller -i everymanbio/ --recursive -s guppy_sup_output/ --config dna_r9.4.1_450bps_sup.cfg --device cuda:0 --disable_qscore_filtering 
-
-cat guppy_sup_output/*.fastq | gzip > guppy_sup_output/combined.fastq.gz 
-```
-
 ### _De novo_ Assembly of Nanopore Sequencing Read Data
 Sequencing was performed on the Oxford Nanopore platform and multiple `fastq` files were emitted from Guppy, the basecalling component of the MinKNOW software package.
 
@@ -97,3 +87,112 @@ liftoff -g Pestal1_GeneCatalog_20180925.gff3 \
 > ../ncbi/consensus.fasta \
 > Pestal1_AssemblyScaffolds.fasta
 ```
+
+### Estimating the number of chromosomes 
+
+The first step was to determine which contigs contained telomere repeat sequences. Contigs 1, 4, 6, 7, 8 have telomeres at both the start and end of the fasta file, suggesting there are at least 5 telomere-to-telomere chromosomes. Contig 2, 3, 5, 9 do not have any telomeres. Contig 10 is the mitochondrion since it is circularized, 68 kilobases long, and a BLASTN search revealed high identity to previous mitochondrial genomes.
+
+```
+cat assembly.fasta | grep -A 2 -B 1 -n --no-group-separator -E "AACCCTAACCCTAACCCT|AGGGTTAGGGTTAGGGTT"
+1->contig_1
+2:CCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAA
+3:CCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAA
+4-CCCTAAGCTAATATGCTTTTTCGTAGGTAGCCGATATTTCGTAAATTCGGTTTTCGGCGT
+5-TATAAAATATAAATAAAGTTTATTTTTTAAATTTATCGTAATCGGTATAAATTATATTAC
+68377-TTTTAAAAACAAAACGAGCGGTTTAAATAGCGTTTTTTTTATATCGGCTCGCTTTTATAA
+68378:CGGTTTATTAGCTTAGGGTTAGGGTTAGGGTTAGGGTTAGGGTTAGGGTTAGGGTTAGGG
+68379:TTAGGGTTAGGGTTAGGGTTAGGGTTAGGGTTAGGGTTAGGGTTAGGGTTAGGGTTAGGG
+68380:TTAGGGTTAGGGTTAGGGTTAGGGTTAGGGAGCAATACGTAACT
+68381->contig_3
+68382-TGTACTTCGTTCAGTTGCAGCATACTTGCTATTACAGTTCGAAGCAGCCATATTTGTAGC
+168492->contig_4
+168493:GTTACGTATTGCTCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAA
+168494:CCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAA
+168495:CCCTAACCCTAACCCTAACCCTAAGCTAGCTAGCTAATGATTAAACGAAGGAATTTAAGT
+168496-AAAAAAAATACCGTTAATTAATATATAAAAAATAAATAAAAAAAGCTACGCAGTAAAAAC
+168497-GCTATTTAAAATTATTTAAAATTATTATTAAAGTATATAAAAATACGTTTATTTATTAAT
+316520-AGAGCTCCATTTTGATGGTTGATGTGGCCGGAGGTCGTGGCCACGACTTGCTCGAATTTT
+316521:AGGGTTAGGGTTAGGTTAGCTTAGGGTTAGGGTTAGCTTAGGGTTAGGGTTAGGGTTAGG
+316522:GTTAGGGTTAGGGTTAGGGTTAGGGTTAGGGTTAGGGTTAGGGTTAGGGTTAGGGTTAGG
+316523-GTTAGGGTTAGGGTTAGG
+316524->contig_5
+406562->contig_6
+406563:TTCAGTTACGTATTGCTCCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAAC
+406564:CCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAAC
+406565:CCTAACCCTAACCCTAACCCTAACCCTAGGCTGATAATTCTTTTTATTAAATTATAATTC
+406566-CGGTTATAATTTATTTTTTAAAATTATTATTAAAATTATAATCCCGTTAATAATTATTAA
+406567-TAATTATTAATTTTAATTAGTATTTTAATAAGTTTTTTATTTAATAATAATATCCTTGTA
+528377-TACTGACTGCTGCATTGACTGTTGTATTCACTGCTGCACTGACTGTTGTACTGACTGCTG
+528378:CATTGACTGCTGTATTGACTGTTAGGGTTAGGGTTAGGGTTAGGGTTAGGGTTAGGGTTA
+528379:GGGTTAGGGTTAGGGTTAGGGTTAGGGTTAGGGTTAGGGTTAGGGTTAGGGTTAGGGTTA
+528380:GGGTTAGGGTTAGGGTTAGGGTTAGGGTTAGGGTTAGGGAGCAATACGTAACTGAACG
+528381->contig_7
+528382:TACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCT
+528383:AACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCT
+528384-AAGCTAACCCTAACCCTAATGGTCCTTGGGAGCAGACGCTTGTGGTCTTTTCGTATAGCA
+528385-AAAGCTGCTGTGTGATTTCGACTTGCCTAGTTCGGACTCGAATAAGTGGCGATTCCAGAG
+625696-AAAATATATCCGATTTAAACGCCGTTAATACGGCCGACCCGGGCTTAAAATTAATTTAAA
+625697:AAGTTAATTAGCTTAGGGTTAGGTTAGCTTAGGGTTAGGGTTAGGGTTAGGGTTAGGGTT
+625698:AGGGTTAGGGTTAGGGTTAGGGTTAGGGTTAGGGTTAGGGTTAGGGTTAGGGTTAGGGTT
+625699:AGGGTTAGGGTTAGGGTTAGGG
+625700->contig_8
+625701:ACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTA
+625702:ACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCTATGCGCGT
+625703-ACACGCTGTAAAAAGAAGCGAACCCCGCAAAAAGGCATACCTACCCCAGCCAAGTGGTAC
+625704-AGCAATTGTGAATGGTCCAGATAGTAGTTGGCGATAAATGAGCCCTTTGACTAGAAATAA
+794422-TTGCAAGAAGATGATTGCAATCTTGGGTGCTTAGAGTTAGCTTAGGGTTAGCTTAGGGTT
+794423:AGGGTTAGGGTTAGGGTTAGGGTTAGGGTTAGGGTTAGGGTTAGGGTTAGGGTTAGGGTT
+794424:AGGGTTAGGGTTAGGGTTAGGGTTAGGGTTAGGGTTAGGGTTAGGAGCAATACGTAACTG
+794425-AACGAAGTAC
+```
+
+Estimate the number of chromosomes by generating network graphs of all telomere-containing reads. 
+
+```
+# filter to take only reads that are at least 5 kb long
+seqtk seq -L 5000 pest.fastq.gz | gzip > pest_5kb.fastq.gz
+
+# extract telomere-containing reads only
+gunzip -c pest_5kb.fastq.gz | grep -A 2 -B 1 --no-group-separator -E "AACCCTAACCCTAACCCT|AGGGTTAGGGTTAGGGTT" - | gzip > telomere_5kb_pest.fastq.gz
+
+# 774 reads pass this filtering. this is about the expected sequencing coverage range we expect for anywhere 5-10 chromosomes.
+
+# align all telomere-containing reads against each other.
+minimap2 -x ava-ont -t 14 telomere_5kb_pest.fastq.gz telomere_5kb_pest.fastq.gz  > 5kb_overlaps.paf
+
+# filter the overlaps so all overlaps have > 95% query coverage
+awk '( ($4 - $3 ) / $2 ) >= 0.95 {print $0}' 5kb_overlaps.paf  > 5kb_overlaps_filt.paf
+
+# this reduces the overlaps from ~ 24k to ~ 6k
+
+# open R 
+R
+
+library(igraph)
+
+d <- read.table("5kb_overlaps_filt.paf")
+
+# we only need the target and query read names
+subset <- data.frame(from=d$V1, to=d$V6)
+
+# create the network graph
+g <- graph_from_data_frame(subset)
+
+# extract all sub graphs with a minimum of 10 reads 
+subgraphs <- decompose.graph(g, min.vertices=10)
+
+# plot all network graphs 
+pdf("network_graph.pdf", width = 50, height = 50)
+par(mfrow=c(3,5))
+for (i in seq(subgraphs)) {
+
+    plot(subgraphs[[1]], vertex.label=NA, vertex.size=15, edge.arrow.size=0.1, vertex.color=rgb(0.2,0,1, 0.2), vertex.frame.color="NA")
+} 
+
+dev.off()
+
+```
+
+The 14 unique highly interconnected network graphs separate perfectly, each network graph of reads represents a group of reads that all come from a single telomere. Since we expect 2 telomeres per chromosome (one at the start, one at the end, and because DNA was extracted during a haploid life cycle so there are not two haplotypes), this suggests that are 14 unique telomeres and 7 chromosomes. 
+
+

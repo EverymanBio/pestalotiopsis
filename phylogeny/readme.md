@@ -3,14 +3,12 @@
 The following contains the steps used in compiling accessions, generating multisequence alignments, concatenation, tree building and visualization.
 
 ### Sequence Acquisition
-A list of type sequences containing ITS, TUB, and TEF accessions were constructed from prior work[^1].
+A list of type sequences containing ITS, TUB, and TEF accessions for _Pestalotiopsis_, including an outgroup using the species _Neopestalotiopsis saprophytica_, was constructed from prior work.[^1]
 
-A compiled list of Pestalotiopsis species and attached accessions was curated to remove repeat species and species outside of the target genus and formatted into the following CSV: [phylogeny/accessions.csv](accessions.csv)
-
-An outgroup using the species _Neopestalotiopsis saprophytica_ was appended based on prior work.[^1].
+[accessions.csv](accessions.csv) was created with the compiled list of accessions. The list was curated by removing any repeat species and species outside of the target genus.
 
 #### Retreiving Gene Sequences from Subject Genome
-ITS, TUB, and TEF regions of the subject Pestalotiopsis genome was obtaining using [seqkit](https://bioinf.shenwei.me/seqkit/) `v2.0.0` using the following command and a [primers.tsv](primers.tsv) containing primers targetting the regions of interest: 
+ITS, TUB, and TEF regions of the subject Pestalotiopsis genome was obtained using [seqkit](https://bioinf.shenwei.me/seqkit/) `v2.0.0` using the following command supplied with [primers.tsv](primers.tsv) containing primers targetting the regions of interest: 
 
 ```zsh
 cat consensus.fasta | seqkit amplicon -j 16 -m 2 -p primers.tsv --bed
@@ -26,6 +24,8 @@ A [utility script](accession_downloader.py) was made to download the accessions 
 
 The utility also appends the subject genome loci-specific files to the corresponding list of accession sequences downloaded by the script.
 
+The utility requires an email address as a single argument as required by the Entrez API.
+
 ```bash
  python accession_downloader.py email@domain.com
  ```
@@ -37,7 +37,7 @@ The utility also appends the subject genome loci-specific files to the correspon
 * [tef_combined.fasta](files/tef_combined.fasta)
 
 ### Sequence Alignment
-All three sequences were aligned using [MAFFT](https://mafft.cbrc.jp/alignment/software/) `v7.453`.
+All three sequences were aligned using [MAFFT](https://mafft.cbrc.jp/alignment/software/) `v7.453` using the `--auto` settings.
 
 ```zsh
 mafft --auto files/its_combined.fasta > its_aligned.fasta
@@ -45,10 +45,10 @@ mafft --auto files/tub_combined.fasta > tub_aligned.fasta
 mafft --auto files/tef_combined.fasta > tef_aligned.fasta
 ```
 
-The alignments were trimmed and concatenated using [Mega 11](https://www.megasoftware.net/dload_mac_beta). 
+The alignments were then trimmed and concatenated using [Mega 11](https://www.megasoftware.net/dload_mac_beta). 
 
 ### Tree Building
-A Maximum Likelihood tree was constructed in [Mega 11](https://www.megasoftware.net/) using the combined ITS+TUB+TEF alignment with default settings and 100 bootstrap replications. 
+A Maximum Likelihood (ML) tree was constructed in [Mega 11](https://www.megasoftware.net/) using the combined ITS+TUB+TEF alignment with default settings and 100 bootstrap replications. 
 
 The final tree was saved in Newick format: [final_tree.nwk](final_tree.nwk) 
 

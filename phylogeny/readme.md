@@ -50,8 +50,12 @@ The alignments were trimmed and concatenated using [Mega 11](https://www.megasof
 ### Tree Building
 A Maximum Likelihood tree was constructed in [Mega 11](https://www.megasoftware.net/) using the combined ITS+TUB+TEF alignment with default settings and 100 bootstrap replications. 
 
-The final tree was saved in Newick format: [final_tree.nwk](final_tree.nwk)
+The final tree was saved in Newick format: [final_tree.nwk](final_tree.nwk) 
 
+### Visualization
 
+<a href="images/tree.png"><img src="images/tree.png" width="250"/></a>
+<a href="images/circle.png"><img src="images/circle.png" width="250"/></a>
+<a href="images/curved.png"><img src="images/curved.png" width="250"/></a>
 
 [^1]: Maharachchikumbura SS, Hyde KD, Groenewald JZ, Xu J, Crous PW. Pestalotiopsis revisited. Stud Mycol. 2014 Sep;79:121-86. doi: 10.1016/j.simyco.2014.09.005. PMID: 25492988; PMCID: PMC4255583.

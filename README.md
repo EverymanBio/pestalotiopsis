@@ -2,7 +2,9 @@
 
 [![DOI](https://zenodo.org/badge/406962936.svg)](https://zenodo.org/badge/latestdoi/406962936)
 
-The following contains the steps used in the assembly, polishing and annotation pipeline for generating the Pestalotiopsis draft genome. 
+The following contains the steps used in the assembly, polishing and annotation pipeline for generating the Pestalotiopsis draft genome.
+
+See [Phylogenetic Analysis Readme](phylogeny/readme.md) for steps used in phylogeny.
 
 ### _De novo_ Assembly of Nanopore Sequencing Read Data
 Sequencing was performed on the Oxford Nanopore platform and multiple `fastq` files were emitted from Guppy, the basecalling component of the MinKNOW software package.

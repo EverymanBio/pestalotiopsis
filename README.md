@@ -148,7 +148,9 @@ cat assembly.fasta | grep -A 2 -B 1 -n --no-group-separator -E "AACCCTAACCCTAACC
 794425-AACGAAGTAC
 ```
 
-Estimate the number of chromosomes by generating network graphs of all telomere-containing reads. 
+### Estimate the number of chromosomes by generating network graphs of all telomere-containing reads
+
+[seqtk](https://github.com/lh3/seqtk) is used to filter the reads by length, and [minimap2](https://github.com/lh3/minimap2) is used to generate all-vs-all overlaps between all telomere-containing reads. 
 
 ```
 # filter to take only reads that are at least 5 kb long
@@ -166,8 +168,14 @@ minimap2 -x ava-ont -t 14 telomere_5kb_pest.fastq.gz telomere_5kb_pest.fastq.gz 
 awk '( ($4 - $3 ) / $2 ) >= 0.95 {print $0}' 5kb_overlaps.paf  > 5kb_overlaps_filt.paf
 
 # this reduces the overlaps from ~ 24k to ~ 6k
+```
 
-# open R 
+### Visualize the network graphs in R
+
+The 14 unique highly interconnected network graphs separate perfectly, each network graph of reads represents a group of reads that all come from a single telomere. Since we expect 2 telomeres per chromosome (one at the start, one at the end, and because DNA was extracted during a haploid life cycle so there is only a single haplotype expected), this suggests that are 14 unique telomeres and 7 chromosomes. 
+
+```
+# open the R programming language on the command land 
 R
 
 library(igraph)
@@ -194,7 +202,4 @@ for (i in seq(subgraphs)) {
 dev.off()
 
 ```
-
-The 14 unique highly interconnected network graphs separate perfectly, each network graph of reads represents a group of reads that all come from a single telomere. Since we expect 2 telomeres per chromosome (one at the start, one at the end, and because DNA was extracted during a haploid life cycle so there are not two haplotypes), this suggests that are 14 unique telomeres and 7 chromosomes. 
-
 

@@ -51,7 +51,7 @@ contig_10
 /mnt/e/pestalotiopsis/assembly/minimap2/overlaps.paf
 ```
 
-4. Use [rakon](https://github.com/lbcb-sci/racon) `v.1.4.22` for error correction
+4. Use [racon](https://github.com/lbcb-sci/racon) `v.1.4.22` for error correction
 
 Note that the overlaps were gzipped prior to running rakon (e.g. `gzip overlaps.paf`)
 
@@ -72,7 +72,7 @@ Note that the overlaps were gzipped prior to running rakon (e.g. `gzip overlaps.
 ```
 
 ### Create Consenus Assembly
-Finally, [medeka](https://nanoporetech.github.io/medaka/) `v1.4.4` was used to generate the final consensus assembly.
+Finally, [medaka](https://nanoporetech.github.io/medaka/) `v1.4.4` was used to generate the final consensus assembly.
 
 ```
 medaka_consensus -i /mnt/e/pestalotiopsis/guppy_sup_output/combined.fastq.gz \                    

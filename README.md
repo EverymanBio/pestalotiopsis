@@ -75,13 +75,13 @@ Note that the overlaps were gzipped prior to running rakon (e.g. `gzip overlaps.
 Finally, [medaka](https://nanoporetech.github.io/medaka/) `v1.4.4` was used to generate the final consensus assembly.
 
 ```
-medaka_consensus -i /mnt/e/pestalotiopsis/guppy_sup_output/combined.fastq.gz \                    
+medaka_consensus -i /mnt/e/pestalotiopsis/guppy_sup_output/combined.fastq.gz \ 
 -d /mnt/e/pestalotiopsis/assembly/rakon/corrected.fasta \
 -o /mnt/e/pestalotiopsis/assembly/medaka
 ```
 
 ### Assembly Annotation
-Annotation was performed using [liftoff](https://github.com/agshumate/Liftoff) `v1.6.1` against reference assembly [Pestalotiopsis sp. NC0098 v1.0 genome](https://mycocosm.jgi.doe.gov/Pestal1/Pestal1.info.html). 
+Annotation was performed using [liftoff](https://github.com/agshumate/Liftoff) `v1.6.1` against reference assembly [Pestalotiopsis sp. NC0098 v1.0 genome](https://mycocosm.jgi.doe.gov/Pestal1/Pestal1.info.html).
 
 ```
 liftoff -g Pestal1_GeneCatalog_20180925.gff3 \
@@ -90,7 +90,7 @@ liftoff -g Pestal1_GeneCatalog_20180925.gff3 \
 > Pestal1_AssemblyScaffolds.fasta
 ```
 
-### Estimating the number of chromosomes 
+### Estimating the number of chromosomes
 
 The first step was to determine which contigs contained telomere repeat sequences. Contigs 1, 4, 6, 7, 8 have telomeres at both the start and end of the fasta file, suggesting there are at least 5 telomere-to-telomere chromosomes. Contig 2, 3, 5, 9 do not have any telomeres. Contig 10 is the mitochondrion since it is circularized, 68 kilobases long, and a BLASTN search revealed high identity to previous mitochondrial genomes.
 
@@ -150,16 +150,18 @@ cat assembly.fasta | grep -A 2 -B 1 -n --no-group-separator -E "AACCCTAACCCTAACC
 
 ### Estimate the number of chromosomes by generating network graphs of all telomere-containing reads
 
-[seqtk](https://github.com/lh3/seqtk) is used to filter the reads by length, and [minimap2](https://github.com/lh3/minimap2) is used to generate all-vs-all overlaps between all telomere-containing reads. 
+[seqtk](https://github.com/lh3/seqtk) is used to filter the reads by length, and [minimap2](https://github.com/lh3/minimap2) is used to generate all-vs-all overlaps between all telomere-containing reads.
 
 ```
 # filter to take only reads that are at least 5 kb long
 seqtk seq -L 5000 pest.fastq.gz | gzip > pest_5kb.fastq.gz
 
 # extract telomere-containing reads only
-gunzip -c pest_5kb.fastq.gz | grep -A 2 -B 1 --no-group-separator -E "AACCCTAACCCTAACCCT|AGGGTTAGGGTTAGGGTT" - | gzip > telomere_5kb_pest.fastq.gz
+gunzip -c pest_5kb.fastq.gz | grep -A 2 -B 1 --no-group-separator \
+-E "AACCCTAACCCTAACCCT|AGGGTTAGGGTTAGGGTT" - | gzip > telomere_5kb_pest.fastq.gz
 
-# 774 reads pass this filtering. this is about the expected sequencing coverage range we expect for anywhere 5-10 chromosomes.
+# 774 reads pass this filtering. this is about the expected sequencing
+# coverage range we expect for anywhere 5-10 chromosomes.
 
 # align all telomere-containing reads against each other.
 minimap2 -x ava-ont -t 14 telomere_5kb_pest.fastq.gz telomere_5kb_pest.fastq.gz  > 5kb_overlaps.paf
@@ -172,10 +174,10 @@ awk '( ($4 - $3 ) / $2 ) >= 0.95 {print $0}' 5kb_overlaps.paf  > 5kb_overlaps_fi
 
 ### Visualize the network graphs in R
 
-The 14 unique highly interconnected network graphs separate perfectly, each network graph of reads represents a group of reads that all come from a single telomere. Since we expect 2 telomeres per chromosome (one at the start, one at the end, and because DNA was extracted during a haploid life cycle so there is only a single haplotype expected), this suggests that are 14 unique telomeres and 7 chromosomes. 
+The 14 unique highly interconnected network graphs separate perfectly. Each network graph of reads represents a group of reads that all come from a single telomere. Since we expect 2 telomeres per chromosome (one at the start, one at the end, and because DNA was extracted during a haploid life cycle so there is only a single haplotype expected), this suggests that are 14 unique telomeres and 7 chromosomes.
 
 ```
-# open the R programming language on the command land 
+# open the R programming language on the command line
 R
 
 library(igraph)
@@ -188,18 +190,21 @@ subset <- data.frame(from=d$V1, to=d$V6)
 # create the network graph
 g <- graph_from_data_frame(subset)
 
-# extract all sub graphs with a minimum of 10 reads 
+# extract all sub graphs with a minimum of 10 reads
 subgraphs <- decompose.graph(g, min.vertices=10)
 
-# plot all network graphs 
+# plot all network graphs
 pdf("network_graph.pdf", width = 50, height = 50)
 par(mfrow=c(3,5))
 for (i in seq(subgraphs)) {
-
-    plot(subgraphs[[1]], vertex.label=NA, vertex.size=15, edge.arrow.size=0.1, vertex.color=rgb(0.2,0,1, 0.2), vertex.frame.color="NA")
-} 
+    plot(subgraphs[[1]],
+         vertex.label=NA,
+         vertex.size=15,
+         edge.arrow.size=0.1,
+         vertex.color=rgb(0.2,0,1, 0.2),
+         vertex.frame.color="NA")
+}
 
 dev.off()
-
 ```
 
